@@ -1,7 +1,6 @@
-# Sử dụng image PHP chính thức với ApacheAdd commentMore actions
 FROM php:8.1-apache
 
-# Cài đặt các tiện ích và extensions cần thiết
+# Install required utilities and PHP extensions
 RUN apt-get update && apt-get install -y \
     git \
     zip \
@@ -15,29 +14,29 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo pdo_mysql mbstring xml mysqli gd \
     && a2enmod rewrite
 
-# Cài đặt Composer
+# Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Sao chép mã nguồn vào container
+# Copy source code into the container
 COPY . /var/www/html
 
-# Cài đặt dependencies bằng Composer
+# Install dependencies with Composer
 WORKDIR /var/www/html
 RUN composer clear-cache && composer install --no-dev --optimize-autoloader
 
-# Cấp quyền cho mã nguồn
+# Set permissions for the source code
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
-# Cấu hình Apache trỏ DocumentRoot về thư mục /var/www/html/view
+# Configure Apache DocumentRoot
 ENV APACHE_DOCUMENT_ROOT /var/www/html/view
 
-# Sửa cấu hình VirtualHost để trỏ đúng DocumentRoot
+# Update Apache configuration to use the new DocumentRoot
 RUN sed -i "s|DocumentRoot /var/www/html|DocumentRoot ${APACHE_DOCUMENT_ROOT}|g" /etc/apache2/sites-available/000-default.conf \
-    && sed -i "s|<Directory /var/www/>|<Directory ${APACHE_DOCUMENT_ROOT}>|g" /etc/apache2/apache2.confAdd commentMore actions
+    && sed -i "s|<Directory /var/www/>|<Directory ${APACHE_DOCUMENT_ROOT}/>|g" /etc/apache2/apache2.conf
 
-# Mở cổng HTTP
+# Expose HTTP port
 EXPOSE 80
 
-# Khởi động Apache
+# Start Apache
 CMD ["apache2-foreground"]
