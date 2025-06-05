@@ -32,22 +32,21 @@ RUN composer clear-cache && composer install --no-dev --optimize-autoloader
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
-# Cấu hình Apache trỏ DocumentRoot
-# Note: The last ENV value will override the previous one
-ENV APACHE_DOCUMENT_ROOT /var/www/html/view/
+# Cấu hình Apache trỏ DocumentRoot về thư mục /var/www/html/view
+ENV APACHE_DOCUMENT_ROOT /var/www/html/view
 
 # Sửa cấu hình VirtualHost để trỏ đúng DocumentRoot và cho phép sử dụng .htaccess
 RUN sed -i "s|DocumentRoot /var/www/html|DocumentRoot ${APACHE_DOCUMENT_ROOT}|g" /etc/apache2/sites-available/000-default.conf \
     && sed -i "s|<Directory /var/www/>|<Directory ${APACHE_DOCUMENT_ROOT}>|g" /etc/apache2/apache2.conf \
     && sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
 
-# Bật hiển thị lỗi PHP để debug
-RUN echo "php_flag display_errors on" >> /etc/apache2/conf.d/php.ini \
-    && echo "php_flag display_startup_errors on" >> /etc/apache2/conf.d/php.ini \
-    && echo "php_value error_reporting 32767" >> /etc/apache2/conf.d/php.ini
+# Bật hiển thị lỗi PHP bằng cách tạo file cấu hình trong /usr/local/etc/php/conf.d/
+RUN echo "display_errors = On" > /usr/local/etc/php/conf.d/custom.ini \
+    && echo "display_startup_errors = On" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/custom.ini
 
 # Thêm thông tin ngày và giờ
-# Today's date and time is 08:43 PM +07 on Thursday, June 05, 2025
+# Today's date and time is 08:48 PM +07 on Thursday, June 05, 2025
 
 # Mở cổng HTTP
 EXPOSE 80
