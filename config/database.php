@@ -12,17 +12,7 @@ class Database
     public function __construct()
     {
         // Read .env file
-        $envFile = dirname(__DIR__) . '/.env';
-        if (file_exists($envFile)) {
-            $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-            $env = [];
-            foreach ($lines as $line) {
-                if (strpos($line, '=') !== false) {
-                    list($key, $value) = explode('=', $line, 2);
-                    $env[trim($key)] = trim($value);
-                }
-            }
-
+       {
             // Set database connection parameters
             $this->host = $env['DB_HOST'] ?? '127.0.0.1';
             $this->port = $env['DB_PORT'] ?? '3306';
