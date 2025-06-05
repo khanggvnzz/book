@@ -21,20 +21,24 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Sao chép mã nguồn vào container
 COPY . /var/www/html
 
-# Cài đặt dependencies bằng Composer
+# Cài đặt dependencies bằng Composer (nếu có file composer.json)
 WORKDIR /var/www/html
-RUN composer clear-cache && composer install --no-dev --optimize-autoloader
+RUN if [ -f composer.json ]; then composer clear-cache && composer install --no-dev --optimize-autoloader; fi
 
 # Cấp quyền cho mã nguồn
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
-# Cấu hình Apache trỏ DocumentRoot về thư mục /var/www/html/view
-ENV APACHE_DOCUMENT_ROOT /var/www/html/view
+# Bỏ phần thay đổi DocumentRoot vì sẽ routing bằng index.php
+# Giữ nguyên DocumentRoot là /var/www/html
 
-# Sửa cấu hình VirtualHost để trỏ đúng DocumentRoot
-RUN sed -i "s|DocumentRoot /var/www/html|DocumentRoot ${APACHE_DOCUMENT_ROOT}|g" /etc/apache2/sites-available/000-default.conf \
-    && sed -i "s|<Directory /var/www/>|<Directory ${APACHE_DOCUMENT_ROOT}>|g" /etc/apache2/apache2.conf
+# Tạo file .htaccess để bật rewrite URL cho MVC routing
+RUN echo '<IfModule mod_rewrite.c>\n\
+    RewriteEngine On\n\
+    RewriteCond %{REQUEST_FILENAME} !-f\n\
+    RewriteCond %{REQUEST_FILENAME} !-d\n\
+    RewriteRule ^(.*)$ index.php?page=$1 [QSA,L]\n\
+</IfModule>' > /var/www/html/.htaccess
 
 # Mở cổng HTTP
 EXPOSE 80
