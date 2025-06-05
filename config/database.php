@@ -11,36 +11,30 @@ class Database
 
     public function __construct()
     {
-        // Read .env file
-       {
-            // Set database connection parameters
-            $this->host = $env['DB_HOST'] ?? '127.0.0.1';
-            $this->port = $env['DB_PORT'] ?? '3306';
-            $this->dbname = $env['DB_DATABASE'] ?? '';
-            $this->username = $env['DB_USERNAME'] ?? '';
-            $this->password = $env['DB_PASSWORD'] ?? '';
-        }
+        // Đọc biến môi trường trực tiếp
+        $this->host     = getenv('DB_HOST') ?: '127.0.0.1';
+        $this->port     = getenv('DB_PORT') ?: '3306';
+        $this->dbname   = getenv('DB_DATABASE') ?: '';
+        $this->username = getenv('DB_USERNAME') ?: 'root';
+        $this->password = getenv('DB_PASSWORD') ?: '';
     }
 
     public function connect()
     {
-        $this->conn = null;
-
         try {
             $dsn = "mysql:host={$this->host};port={$this->port};dbname={$this->dbname};charset=utf8mb4";
             $this->conn = new PDO($dsn, $this->username, $this->password);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-            $this->conn->exec("set names utf8");
+            return $this->conn;
         } catch (PDOException $e) {
-            error_log("Database Connection Error: " . $e->getMessage());
+            echo "Connection failed: " . $e->getMessage();
+            exit();
         }
-
-        return $this->conn;
     }
 
     public function getConnection()
     {
-        return $this->connect();
+        return $this->conn;
     }
 }
