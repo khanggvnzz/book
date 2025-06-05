@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libxml2-dev \
+    libonig-dev \
     && docker-php-ext-install pdo pdo_mysql mbstring xml mysqli \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
@@ -23,9 +24,13 @@ RUN chown -R www-data:www-data /var/www/html \
 WORKDIR /var/www/html
 RUN composer install --no-dev --optimize-autoloader
 
-# Cấu hình Apache
+# Cấu hình Apache cho phép sử dụng .htaccess
+RUN echo "<Directory /var/www/html>\n\
+    AllowOverride All\n\
+</Directory>" > /etc/apache2/sites-available/000-default.conf
+
+# Kích hoạt rewrite module và reload Apache config
 RUN a2enmod rewrite
-COPY .htaccess /var/www/html/.htaccess
 
 # Mở cổng 80
 EXPOSE 80
