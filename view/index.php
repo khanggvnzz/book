@@ -4,6 +4,24 @@ require_once __DIR__ . '/../model/BookModel.php';
 require_once __DIR__ . '/../model/CartModel.php';
 require_once __DIR__ . '/../controller/search.php';
 
+// Handle routing based on URL parameter
+$url = isset($_GET['url']) ? trim($_GET['url']) : 'home';
+
+// Route to specific pages
+if ($url === 'login') {
+    // Include login.php from the login directory
+    if (file_exists(__DIR__ . '/login/login.php')) {
+        include __DIR__ . '/login/login.php';
+        exit; // Stop further execution after including login.php
+    } else {
+        // Show 404 if login.php doesn't exist
+        header('HTTP/1.0 404 Not Found');
+        include __DIR__ . '/404.php';
+        exit;
+    }
+}
+
+// Default logic for book display (original code)
 $database = new Database();
 $db = $database->connect();
 $bookModel = new BookModel($db);
@@ -69,8 +87,6 @@ $categories = $bookModel->getAllCategories();
 
     <!-- Action Buttons Row -->
     <div class="container mt-2">
-        </nav>
-
         <!-- Fixed Action Buttons -->
         <div class="action-buttons-fixed">
             <button class="btn btn-success rounded-pill view-cart-btn"><i class="bi bi-cart"></i> View Cart</button>
@@ -89,8 +105,6 @@ $categories = $bookModel->getAllCategories();
                         <h1>THEBOOKSTORE.COM</h1>
                         <p class="lead">Get into our Store</p>
                         <p>Here every book is a new adventure</p>
-
-
                     </div>
                     <div class="col-md-6 text-center">
                         <img src="images/huit/huit.png" alt="Person reading a book" class="img-fluid hero-image-small">
@@ -216,6 +230,6 @@ $categories = $bookModel->getAllCategories();
 
         <script src="js/main.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+    </body>
 
 </html>
