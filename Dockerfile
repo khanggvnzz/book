@@ -1,38 +1,42 @@
-# Sử dụng image PHP chính thức với Apache
-FROM php:8.2-apache
+# Sử dụng image PHP chính thức với ApacheAdd commentMore actions
+FROM php:8.1-apache
 
-# Cài đặt các tiện ích cần thiết và extensions
+# Cài đặt các tiện ích và extensions cần thiết
 RUN apt-get update && apt-get install -y \
     git \
     zip \
     unzip \
     libpng-dev \
     libjpeg-dev \
-    libxml2-dev \
+    libfreetype6-dev \
     libonig-dev \
-    && docker-php-ext-install pdo pdo_mysql mbstring xml mysqli \
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    libxml2-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo pdo_mysql mbstring xml mysqli gd \
+    && a2enmod rewrite
 
-# Sao chép toàn bộ mã nguồn vào container
+# Cài đặt Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Sao chép mã nguồn vào container
 COPY . /var/www/html
 
-# Cấp quyền cho thư mục web
+# Cài đặt dependencies bằng Composer
+WORKDIR /var/www/html
+RUN composer clear-cache && composer install --no-dev --optimize-autoloader
+
+# Cấp quyền cho mã nguồn
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
-# Cài đặt các thư viện PHP qua Composer
-WORKDIR /var/www/html
-RUN composer install --no-dev --optimize-autoloader
+# Cấu hình Apache trỏ DocumentRoot về thư mục /var/www/html/view
+ENV APACHE_DOCUMENT_ROOT /var/www/html/view
 
-# Cấu hình Apache cho phép sử dụng .htaccess
-RUN echo "<Directory /var/www/html>\n\
-    AllowOverride All\n\
-</Directory>" > /etc/apache2/sites-available/000-default.conf
+# Sửa cấu hình VirtualHost để trỏ đúng DocumentRoot
+RUN sed -i "s|DocumentRoot /var/www/html|DocumentRoot ${APACHE_DOCUMENT_ROOT}|g" /etc/apache2/sites-available/000-default.conf \
+    && sed -i "s|<Directory /var/www/>|<Directory ${APACHE_DOCUMENT_ROOT}>|g" /etc/apache2/apache2.confAdd commentMore actions
 
-# Kích hoạt rewrite module và reload Apache config
-RUN a2enmod rewrite
-
-# Mở cổng 80
+# Mở cổng HTTP
 EXPOSE 80
 
 # Khởi động Apache
