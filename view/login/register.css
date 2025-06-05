@@ -1,0 +1,33 @@
+.register-container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+.form-label {
+    font-weight: 500;
+}
+
+.password-container {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+    color: #6c757d;
+}
+
+.btn-register {
+    padding: 10px 20px;
+    font-weight: 500;
+}
+
+.login-link {
+    margin-top: 20px;
+}

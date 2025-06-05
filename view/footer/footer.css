@@ -1,0 +1,37 @@
+/* Footer styling */
+footer {
+    width: 100vw;
+    margin: 0;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    background-color: #054f9e;
+    /* Dark blue color from image */
+    color: white;
+    padding: 50px 0;
+}
+
+footer h4 {
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+footer h6 {
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+footer ul li {
+    margin-bottom: 10px;
+}
+
+footer .newsletter .input-group {
+    margin-top: 15px;
+}
+
+footer .btn-success {
+    background-color: var(--primary-color);
+    border: none;
+}

@@ -1,0 +1,93 @@
+.login-container {
+    max-width: 500px;
+    margin: 60px auto;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+.form-label {
+    font-weight: 500;
+}
+
+.password-container {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+    color: #6c757d;
+}
+
+.btn-login {
+    padding: 10px 20px;
+    font-weight: 500;
+}
+
+.register-link {
+    margin-top: 20px;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 25px 0;
+}
+
+.divider hr {
+    flex: 1;
+    border-color: #dee2e6;
+}
+
+.divider-text {
+    padding: 0 15px;
+    color: #6c757d;
+}
+
+.social-login {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: white;
+    transition: all 0.3s;
+}
+
+.social-btn:hover {
+    transform: translateY(-3px);
+}
+
+.btn-facebook {
+    background-color: #3b5998;
+}
+
+.btn-google {
+    background-color: #dd4b39;
+}
+
+.btn-twitter {
+    background-color: #1da1f2;
+}
+
+/* Đảm bảo navbar và footer hiển thị đúng */
+.navbar {
+    background-color: #198754 !important;
+}
+
+footer {
+    background-color: #343a40 !important;
+    color: white !important;
+}
