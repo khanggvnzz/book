@@ -1,0 +1,29 @@
+{
+    "name": "khangvbn/book-store",
+    "description": "A simple bookstore web application",
+    "type": "project",
+    "authors": [
+        {
+            "name": "KhangVBN",
+            "email": "khangvu782004@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*",
+        "ext-mbstring": "*",
+        "ext-xml": "*",
+        "ext-mysqli": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pc\\BookStore\\": "src/",
+            "Config\\": "config/",
+            "Controller\\": "controller/",
+            "Model\\": "model/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
